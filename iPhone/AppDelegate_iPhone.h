@@ -7,9 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <MediaPlayer/MediaPlayer.h>
 
 @interface AppDelegate_iPhone : NSObject <UIApplicationDelegate> {
     UIWindow *window;
+    MPMoviePlayerViewController *playerViewController;
 }
 
 @property (nonatomic, retain) IBOutlet UIWindow *window;

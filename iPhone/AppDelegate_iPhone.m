@@ -14,13 +14,44 @@
 
 
 #pragma mark -
+#pragma mark Notification Handlers
+
+- (void)loadStatedDidChange:(NSNotification *)aNotification {
+    DLog(@"self = %@", self);
+    NSError *error = [[aNotification userInfo] objectForKey:@"error"];
+    if (error) {
+        DLog(@"error = %@", error);
+    }
+}
+
+
+- (void)playbackDidFinish:(NSNotification *)aNotification {
+    DLog(@"self = %@", self);    
+    NSError *error = [[aNotification userInfo] objectForKey:@"error"];
+    if (error) {
+        DLog(@"error = %@", error);
+    }    
+}
+
+
+#pragma mark -
 #pragma mark Application lifecycle
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {    
     
-    // Override point for customization after application launch.
-    
+    // Override point for customization after application launch.    
+    NSURL *contentURL = [[NSURL alloc] initWithString:@"http://devimages.apple.com/iphone/samples/bipbop/gear1/prog_index.m3u8"];
+    playerViewController = [[MPMoviePlayerViewController alloc] initWithContentURL:contentURL];
+    [contentURL release];
+    playerViewController.view.frame = [[UIScreen mainScreen] applicationFrame];
+
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loadStatedDidChange:) name:MPMoviePlayerLoadStateDidChangeNotification object:playerViewController.moviePlayer];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(playbackDidFinish:) name:MPMoviePlayerPlaybackDidFinishNotification object:playerViewController.moviePlayer];
+
+    [self.window addSubview:playerViewController.view];
     [self.window makeKeyAndVisible];
+    
+    [playerViewController.moviePlayer play];
     
     return YES;
 }
